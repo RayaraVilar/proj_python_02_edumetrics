@@ -1,0 +1,334 @@
+{% load static %}
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="Predição de risco de evasão estudantil com PyTorch."
+    />
+
+    <title>Predição de evasão | EduMetrics</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}" />
+
+    <link rel="stylesheet" href="{% static 'dashboard/css/prediction.css' %}" />
+  </head>
+
+  <body>
+    <div class="prediction-layout">
+      <aside class="prediction-sidebar">
+        <a class="brand" href="/">
+          <span class="brand-icon">E</span>
+
+          <div>
+            <strong>EduMetrics</strong>
+            <small>Educational Intelligence</small>
+          </div>
+        </a>
+
+        <div class="prediction-sidebar-content">
+          <span class="sidebar-eyebrow"> INTELIGÊNCIA EDUCACIONAL </span>
+
+          <h1>Identifique sinais antes que eles se tornem evasão.</h1>
+
+          <p>
+            Preencha os indicadores acadêmicos do estudante para gerar uma
+            estimativa de risco com o modelo treinado em PyTorch.
+          </p>
+
+          <div class="feature-list">
+            <div>
+              <span>✓</span>
+
+              <p>
+                <strong>Análise rápida</strong>
+                Resultado gerado em poucos segundos.
+              </p>
+            </div>
+
+            <div>
+              <span>✓</span>
+
+              <p>
+                <strong>Linguagem humana</strong>
+                O resultado vem acompanhado de orientação.
+              </p>
+            </div>
+
+            <div>
+              <span>✓</span>
+
+              <p>
+                <strong>Apoio à decisão</strong>
+                A tecnologia ajuda, mas não substitui o acompanhamento humano.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <a class="back-link" href="/"> ← Voltar ao dashboard </a>
+      </aside>
+
+      <main class="prediction-content">
+        <header class="prediction-header">
+          <div>
+            <span class="page-eyebrow"> MODELO PREDITIVO </span>
+
+            <h2>Simular risco de evasão</h2>
+
+            <p>
+              Informe os dados atuais do estudante para obter uma estimativa
+              personalizada.
+            </p>
+          </div>
+
+          <span class="model-badge">
+            <span></span>
+            PyTorch ativo
+          </span>
+        </header>
+
+        <div class="prediction-grid">
+          <section class="prediction-form-card">
+            <div class="section-title">
+              <span>01</span>
+
+              <div>
+                <h3>Dados acadêmicos</h3>
+                <p>
+                  Utilize informações recentes para obter um resultado mais
+                  coerente.
+                </p>
+              </div>
+            </div>
+
+            {% if error %}
+            <div class="form-error">
+              <strong>Não foi possível analisar.</strong>
+              <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <form method="post">
+              {% csrf_token %}
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="attendance_rate">
+                    Frequência
+                    <span>0 a 100%</span>
+                  </label>
+
+                  <div class="input-with-suffix">
+                    <input
+                      id="attendance_rate"
+                      name="attendance_rate"
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="0.1"
+                      value="{{ form_data.attendance_rate|default:'' }}"
+                      placeholder="Ex.: 82"
+                      required
+                    />
+
+                    <span>%</span>
+                  </div>
+
+                  <small> Percentual de presença do estudante. </small>
+                </div>
+
+                <div class="form-group">
+                  <label for="average_grade">
+                    Nota média
+                    <span>0 a 10</span>
+                  </label>
+
+                  <input
+                    id="average_grade"
+                    name="average_grade"
+                    type="number"
+                    min="0"
+                    max="10"
+                    step="0.1"
+                    value="{{ form_data.average_grade|default:'' }}"
+                    placeholder="Ex.: 7.5"
+                    required
+                  />
+
+                  <small> Média atual das avaliações. </small>
+                </div>
+
+                <div class="form-group">
+                  <label for="platform_accesses"> Acessos à plataforma </label>
+
+                  <input
+                    id="platform_accesses"
+                    name="platform_accesses"
+                    type="number"
+                    min="0"
+                    value="{{ form_data.platform_accesses|default:'' }}"
+                    placeholder="Ex.: 35"
+                    required
+                  />
+
+                  <small> Número de acessos no período analisado. </small>
+                </div>
+
+                <div class="form-group">
+                  <label for="study_hours_per_week">
+                    Horas de estudo por semana
+                  </label>
+
+                  <input
+                    id="study_hours_per_week"
+                    name="study_hours_per_week"
+                    type="number"
+                    min="0"
+                    step="0.5"
+                    value="{{ form_data.study_hours_per_week|default:'' }}"
+                    placeholder="Ex.: 6"
+                    required
+                  />
+
+                  <small> Tempo médio dedicado aos estudos. </small>
+                </div>
+
+                <div class="form-group">
+                  <label for="completed_activities">
+                    Atividades concluídas
+                  </label>
+
+                  <input
+                    id="completed_activities"
+                    name="completed_activities"
+                    type="number"
+                    min="0"
+                    value="{{ form_data.completed_activities|default:'' }}"
+                    placeholder="Ex.: 16"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="total_activities"> Total de atividades </label>
+
+                  <input
+                    id="total_activities"
+                    name="total_activities"
+                    type="number"
+                    min="0"
+                    value="{{ form_data.total_activities|default:'' }}"
+                    placeholder="Ex.: 20"
+                    required
+                  />
+                </div>
+              </div>
+
+              <button class="prediction-button" type="submit">
+                <span>Analisar estudante</span>
+                <strong>→</strong>
+              </button>
+
+              <p class="form-disclaimer">
+                Esta análise é demonstrativa e utiliza dados sintéticos. O
+                resultado não deve substituir uma avaliação pedagógica.
+              </p>
+            </form>
+          </section>
+
+          <section class="prediction-result-card">
+            <div class="section-title">
+              <span>02</span>
+
+              <div>
+                <h3>Resultado da análise</h3>
+                <p>Entenda o risco e veja uma recomendação.</p>
+              </div>
+            </div>
+
+            {% if result %}
+            <div class="result-content {{ result.risk_level }}">
+              <div class="risk-gauge">
+                <div
+                  class="risk-gauge-circle"
+                  style="--risk-value: {{ result.percentage }};"
+                >
+                  <div>
+                    <strong> {{ result.percentage }}% </strong>
+
+                    <span>risco estimado</span>
+                  </div>
+                </div>
+              </div>
+
+              <span class="result-badge"> {{ result.risk_label }} </span>
+
+              <h4>{{ result.title }}</h4>
+
+              <p class="result-message">{{ result.message }}</p>
+
+              <div class="recommendation-card">
+                <span>💡</span>
+
+                <div>
+                  <strong>Próximo passo sugerido</strong>
+                  <p>{{ result.recommendation }}</p>
+                </div>
+              </div>
+
+              <div class="result-details">
+                <div>
+                  <span>Modelo utilizado</span>
+                  <strong>Rede neural PyTorch</strong>
+                </div>
+
+                <div>
+                  <span>Probabilidade bruta</span>
+                  <strong>{{ result.probability }}</strong>
+                </div>
+              </div>
+            </div>
+            {% else %}
+            <div class="result-empty">
+              <div class="empty-illustration">
+                <span>◔</span>
+              </div>
+
+              <h4>Aguardando os dados</h4>
+
+              <p>
+                Preencha o formulário ao lado para visualizar a análise de
+                risco.
+              </p>
+
+              <div class="empty-example">
+                <span>Exemplo de resultado</span>
+
+                <div>
+                  <strong>Risco moderado</strong>
+                  <small> Acompanhamento preventivo </small>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </section>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
